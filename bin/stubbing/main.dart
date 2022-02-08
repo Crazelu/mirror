@@ -13,22 +13,13 @@ void main() {
   expect("Hii", cat.meow("uu"));
   expect("Hiiii", cat.meow("hehe"));
 
-  when(cat.limbCount()).thenReturn(4);
-  expect(4, cat.limbCount());
-
-  final sisterCat = CatStub();
-  when(cat.getSister()).thenReturn(sisterCat);
-  expect(sisterCat, cat.getSister());
-
-  when(cat.a()).thenReturn(['expected']);
-  expect(['expected'], cat.a());
+  when(cat.limbCount()).thenReturn(10);
+  expect(10, cat.limbCount());
 }
 
 abstract class Feline {
   String meow(String sound);
   int limbCount();
-  CatStub getSister();
-  List<String> a();
 }
 
 class Cat implements Feline {
@@ -39,22 +30,7 @@ class Cat implements Feline {
   }
 
   @override
-  int limbCount() {
-    // TODO: implement limbCount
-    throw UnimplementedError();
-  }
-
-  @override
-  CatStub getSister() {
-    // TODO: implement getSister
-    throw UnimplementedError();
-  }
-
-  @override
-  List<String> a() {
-    // TODO: implement a
-    throw UnimplementedError();
-  }
+  int limbCount() => 4;
 }
 
 class CatStub with Stub<CatStub>, Feline {}

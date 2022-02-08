@@ -40,6 +40,11 @@ class Stub<T> {
           return [];
 
         default:
+          if (type.toString() == "List<String>") return <String>[];
+          if (type.toString() == "List<int>") return <int>[];
+          if (type.toString() == "List<double>") return <double>[];
+          if (type.toString() == "List<num>") return <num>[];
+
           //construct instance of non-serializable object by calling it's constructor
           return reflectClass(type!).newInstance(Symbol.empty, []).reflectee;
       }
