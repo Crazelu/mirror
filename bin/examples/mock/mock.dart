@@ -1,8 +1,8 @@
 import '../user_dao.dart';
 import 'mock_symbol.dart';
 
-List<MockSymbol> _callList = [];
-Map<MockSymbol, Object?> _calls = {};
+List<MockSymbol> _calls = [];
+Map<MockSymbol, Object?> _invocationResults = {};
 _WhenCall? _whenCall;
 bool _verifyCalled = false;
 int? _verificationCount;
@@ -15,15 +15,15 @@ class Mock {
 
     if (_verifyCalled) {
       _verificationSymbol = symbol;
-      final result = _calls[symbol];
+      final result = _invocationResults[symbol];
       if (result != null) return result;
       return _defaultReturnValue(invocation.memberName);
     }
 
     _whenCall = _WhenCall(symbol);
-    final result = _calls[symbol];
+    final result = _invocationResults[symbol];
     if (result != null) {
-      if (!_verifyCalled) _callList.add(symbol);
+      if (!_verifyCalled) _calls.add(symbol);
       return result;
     }
 
@@ -61,7 +61,7 @@ class _WhenCall<T> {
   _WhenCall(this.symbol);
 
   void _setValue(T value) {
-    _calls[symbol] = value;
+    _invocationResults[symbol] = value;
   }
 }
 
@@ -78,17 +78,22 @@ Function<T>(T _, int n) get verifyN {
 
   return <T>(_, n) {
     _verificationCount = n;
-    final callCount = _callList.where((s) => s == _verificationSymbol).length;
+    final callCount = _calls.where((s) => s == _verificationSymbol).length;
     if (callCount == _verificationCount) {
       print(
-          "Test Passed\n${_verificationSymbol?.constructCall()} called $callCount time(s)");
+          "Test Passed\n${_verificationSymbol?.constructCall()} called ${_formatCountLabel(callCount, 'time')}");
     } else {
       print(
-          "Test Failed\nExpected: ${_verificationSymbol?.constructCall()} called $n time(s)\nActual: ${_verificationSymbol?.constructCall()} called $callCount time(s)");
+          "Test Failed\nExpected: ${_verificationSymbol?.constructCall()} called ${_formatCountLabel(n, 'time')}\nActual: ${_verificationSymbol?.constructCall()} called ${_formatCountLabel(callCount, 'time')}");
     }
 
     _verifyCalled = false;
     _verificationCount = null;
     _verificationSymbol = null;
   };
+}
+
+String _formatCountLabel(int count, String label) {
+  if (count == 1) return "once";
+  return "$count ${label}s";
 }
