@@ -15,9 +15,8 @@ class Mock {
 
     if (_verifyCalled) {
       _verificationSymbol = symbol;
-      final result = _invocationResults[symbol];
-      if (result != null) return result;
-      return _defaultReturnValue(invocation.memberName);
+      return _invocationResults[symbol] ??
+          _defaultReturnValue(invocation.memberName);
     }
 
     _whenCall = _WhenCall(symbol);
